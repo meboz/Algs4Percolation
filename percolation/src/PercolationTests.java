@@ -86,5 +86,8 @@ public class PercolationTests{
     public void OpenPredeterminedSites_WhenNIs1() {
         Percolation p = new Percolation(1);
         p.open(1, 1);
+
+        assertTrue(p.isOpen(1, 1));
+        assertTrue(p.percolates());
     }
 }

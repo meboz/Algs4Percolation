@@ -15,11 +15,12 @@ public class PercolationStats{
 
     private void run(int N, int T) {
         int i = 0;
-
+        Percolation p;
+        int k;
         while (i < T) {
             openSites = new int[N * N];
-            Percolation p = new Percolation(N);
-            int k = 0;
+            p = new Percolation(N);
+            k = 0;
 
             while (!p.percolates()) {
                 openRandomSite(p, N, k);
@@ -27,9 +28,7 @@ public class PercolationStats{
             }
 
             double percentOpen = (double) k / ((double) N * N);
-
             openedSitesBeforePercolation[i] = percentOpen;
-
             i++;
         }
     }
