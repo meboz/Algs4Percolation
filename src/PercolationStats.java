@@ -1,10 +1,13 @@
-public class PercolationStats {
+public class PercolationStats{
 
     private static double[] openedSitesBeforePercolation;
     private static int[] openSites;
     private static int experiments;
 
     public PercolationStats(int N, int T) {
+        if (N <= 0 || T <= 0)
+            throw new java.lang.IllegalArgumentException();
+
         openedSitesBeforePercolation = new double[T];
         experiments = T;
         run(N, T);

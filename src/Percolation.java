@@ -1,96 +1,129 @@
-public class Percolation {
-    private int gridSize = 0;
-    private boolean[][] openSites = null;
-    private WeightedQuickUnionUF weightedQUF = null;
+public class Percolation{
+
+    private boolean[] openSites;
+    private int gridSize;
+    private WeightedQuickUnionUF ufHelper;
 
     public Percolation(int N) {
-
         gridSize = N;
-        openSites = new boolean[N][N];
-        weightedQUF = new WeightedQuickUnionUF(N * N);
-
-        closeAllSites();
+        ufHelper = new WeightedQuickUnionUF(N * N + 3);
+        initAndCloseSites(N);
     }
 
-    public boolean isOpen(int i, int j) {
-        validate(i, j);
-        return openSites[i - 1][j - 1];
-    }
+    private void initAndCloseSites(int N) {
+        openSites = new boolean[N * N + 4];
 
-    public boolean isFull(int i, int j) {
-        validate(i, j);
-        boolean isOpenSite = isOpen(i, j);
-
-        for (int k = 0; k < gridSize; k++) {
-            int otherSite = gridSize * (i - 1) + (j - 1);
-            boolean isConnected = weightedQUF.connected(k, otherSite);
-
-            if (isOpenSite && isConnected) {
-                return true;
-            }
+        for (int i = 1; i <= N; i++) {
+            openSites[i] = false;
         }
 
-        return false;
+        openSites[N * N + 2] = true;
+        openSites[N * N + 3] = true;
     }
 
     public void open(int i, int j) {
         validate(i, j);
-        openSites[i - 1][j - 1] = true;
+        if (!isOpen(i, j)) {
+            openSites[convertTo1D(i, j)] = true;
 
-        if (i > 1 && isOpen(i - 1, j)) { // top
-            weightedQUF.union(gridSize * (i - 1) + (j - 1), gridSize
-                    * (i - 2) + (j - 1));
-        }
-
-        if (i < gridSize && isOpen(i + 1, j)) { // bottom
-            weightedQUF.union(gridSize * (i - 1) + (j - 1), gridSize * (i)
-                    + (j - 1));
-        }
-
-        if (j > 1 && isOpen(i, j - 1)) { // left
-            weightedQUF.union(gridSize * (i - 1) + (j - 1), gridSize
-                    * (i - 1) + j - 2);
-        }
-
-        if (j < gridSize && isOpen(i, j + 1)) { // right.
-            weightedQUF.union(gridSize * (i - 1) + (j - 1), gridSize
-                    * (i - 1) + j);
-        }
-    }
-
-    public boolean percolates() {
-        for (int i = 0; i < gridSize; i++) {
-            for (int j = 0; j < gridSize; j++) {
-                int cur = (gridSize - 1) * gridSize + j;
-                if (isOpen(1, i + 1) && isOpen(gridSize, j + 1)
-                        && weightedQUF.connected(i, cur)) {
-                    return true;
+            if (i == 1) {
+                connectToVirtualTop(i, j);
+            } else {
+                if (i == gridSize) {
+                    connectToVirtualBottom(i, j);
+                } else {
+                    // if cell in the 1-st column (not 1st and last row)
+                    if (j == 1) {
+                        if (isOpen(i + 1, j)) {
+                            ufHelper.union(convertTo1D(i, j),
+                                    convertTo1D(i + 1, j));
+                        }
+                        if (isOpen(i, j + 1)) {
+                            ufHelper.union(convertTo1D(i, j),
+                                    convertTo1D(i, j + 1));
+                        }
+                        if (isOpen(i - 1, j)) {
+                            ufHelper.union(convertTo1D(i, j),
+                                    convertTo1D(i - 1, j));
+                        }
+                    } else {
+                        // if cell in the last column (not 1st and last row)
+                        if (j == gridSize) {
+                            if (isOpen(i, j - 1)) {
+                                ufHelper.union(convertTo1D(i, j),
+                                        convertTo1D(i, j - 1));
+                            }
+                            if (isOpen(i + 1, j)) {
+                                ufHelper.union(convertTo1D(i, j),
+                                        convertTo1D(i + 1, j));
+                            }
+                            if (isOpen(i - 1, j)) {
+                                ufHelper.union(convertTo1D(i, j),
+                                        convertTo1D(i - 1, j));
+                            }
+                        } else {
+                            if (isOpen(i + 1, j)) {
+                                ufHelper.union(convertTo1D(i + 1, j),
+                                        convertTo1D(i, j));
+                            }
+                            if (isOpen(i, j + 1)) {
+                                ufHelper.union(convertTo1D(i, j + 1),
+                                        convertTo1D(i, j));
+                            }
+                            if (isOpen(i - 1, j)) {
+                                ufHelper.union(convertTo1D(i, j),
+                                        convertTo1D(i - 1, j));
+                            }
+                            if (isOpen(i, j - 1)) {
+                                ufHelper.union(convertTo1D(i, j),
+                                        convertTo1D(i, j - 1));
+                            }
+                        }
+                    }
                 }
             }
         }
-        return false;
     }
 
-    private void closeAllSites() {
-        for (int i = 1; i < gridSize; i++) {
-            for (int j = 1; j < gridSize; j++) {
-                openSites[i][j] = false;
-            }
+    private void connectToVirtualBottom(int i, int j) {
+        ufHelper.union(convertTo1D(i, j), gridSize * gridSize + 2);
+        if (isOpen(i - 1, j)) {
+            ufHelper.union(convertTo1D(i, j), convertTo1D(i - 1, j));
         }
     }
 
+    private void connectToVirtualTop(int i, int j) {
+        ufHelper.union(convertTo1D(i, j), gridSize * gridSize + 1);
+        if (isOpen(i, j)) {
+            ufHelper.union(convertTo1D(i, j), convertTo1D(i + 1, j));
+        }
+    }
+
+    public boolean isOpen(int i, int j) {
+        validate(i, j);
+        return openSites[convertTo1D(i, j)];
+    }
+
+    public boolean isFull(int i, int j) {
+        validate(i, j);
+        return isOpen(i, j)
+                && ufHelper.connected(gridSize * gridSize + 1,
+                        convertTo1D(i, j));
+    }
+
+    public boolean percolates() {
+        return ufHelper.connected(gridSize * gridSize + 1, gridSize * gridSize
+                + 2);
+    }
+
+    private int convertTo1D(int i, int j) {
+        return gridSize * (i - 1) + j;
+    }
+
     private void validate(int i, int j) {
-        if (i > gridSize)
-            throw new java.lang.IndexOutOfBoundsException();
-
-        if (i < 1)
-            throw new java.lang.IndexOutOfBoundsException();
-
-        if (j > gridSize)
-            throw new java.lang.IndexOutOfBoundsException();
-
-        if (j < 1)
-            throw new java.lang.IndexOutOfBoundsException();
-
+        if (i > gridSize || j > gridSize || i < 1 || j < 1) {
+            throw new IndexOutOfBoundsException("i or j were outside bounds - "
+                    + i + ", " + j);
+        }
     }
 }

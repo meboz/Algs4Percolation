@@ -1,0 +1,303 @@
+JAVA PROFILE 1.0.1, created Tue Sep 03 22:54:47 2013
+
+Copyright (c) 2003, 2005, Oracle and/or its affiliates. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+  - Neither the name of Oracle nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+Header for -agentlib:hprof (or -Xrunhprof) ASCII Output (JDK 5.0 JVMTI based)
+
+WARNING!  This file format is under development, and is subject to
+change without notice.
+
+This file contains the following types of records:
+
+THREAD START
+THREAD END      mark the lifetime of Java threads
+
+TRACE           represents a Java stack trace.  Each trace consists
+                of a series of stack frames.  Other records refer to
+                TRACEs to identify (1) where object allocations have
+                taken place, (2) the frames in which GC roots were
+                found, and (3) frequently executed methods.
+
+HEAP DUMP       is a complete snapshot of all live objects in the Java
+                heap.  Following distinctions are made:
+
+                ROOT    root set as determined by GC
+                CLS     classes 
+                OBJ     instances
+                ARR     arrays
+
+SITES           is a sorted list of allocation sites.  This identifies
+                the most heavily allocated object types, and the TRACE
+                at which those allocations occurred.
+
+CPU SAMPLES     is a statistical profile of program execution.  The VM
+                periodically samples all running threads, and assigns
+                a quantum to active TRACEs in those threads.  Entries
+                in this record are TRACEs ranked by the percentage of
+                total quanta they consumed; top-ranked TRACEs are
+                typically hot spots in the program.
+
+CPU TIME        is a profile of program execution obtained by measuring
+                the time spent in individual methods (excluding the time
+                spent in callees), as well as by counting the number of
+                times each method is called. Entries in this record are
+                TRACEs ranked by the percentage of total CPU time. The
+                "count" field indicates the number of times each TRACE 
+                is invoked.
+
+MONITOR TIME    is a profile of monitor contention obtained by measuring
+                the time spent by a thread waiting to enter a monitor.
+                Entries in this record are TRACEs ranked by the percentage
+                of total monitor contention time and a brief description
+                of the monitor.  The "count" field indicates the number of 
+                times the monitor was contended at that TRACE.
+
+MONITOR DUMP    is a complete snapshot of all the monitors and threads in 
+                the System.
+
+HEAP DUMP, SITES, CPU SAMPLES|TIME and MONITOR DUMP|TIME records are generated 
+at program exit.  They can also be obtained during program execution by typing 
+Ctrl-\ (on Solaris) or by typing Ctrl-Break (on Win32).
+
+--------
+
+THREAD START (obj=50000168, id = 200002, name="HPROF gc_finish watcher", group="system")
+THREAD START (obj=50000168, id = 200001, name="main", group="main")
+THREAD START (obj=50000168, id = 200004, name="SIGINT handler", group="system")
+THREAD END (id = 200004)
+TRACE 301931:
+	Percolation.isOpen(Percolation.java:Unknown line)
+	Percolation.open(Percolation.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+TRACE 301902:
+	PercolationStats.siteIsOpen(PercolationStats.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+	PercolationStats.<init>(PercolationStats.java:Unknown line)
+TRACE 301933:
+	Percolation.open(Percolation.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+	PercolationStats.<init>(PercolationStats.java:Unknown line)
+TRACE 301934:
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+	PercolationStats.<init>(PercolationStats.java:Unknown line)
+	PercolationStats.main(PercolationStats.java:Unknown line)
+TRACE 301900:
+	StdRandom.uniform(StdRandom.java:Unknown line)
+	PercolationStats.generateRandomNumber(PercolationStats.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+TRACE 301929:
+	Percolation.validate(Percolation.java:Unknown line)
+	Percolation.isOpen(Percolation.java:Unknown line)
+	Percolation.open(Percolation.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+TRACE 301932:
+	Percolation.xyTo1D(Percolation.java:Unknown line)
+	Percolation.open(Percolation.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+TRACE 301842:
+	Percolation.percolates(Percolation.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+	PercolationStats.<init>(PercolationStats.java:Unknown line)
+	PercolationStats.main(PercolationStats.java:Unknown line)
+TRACE 301936:
+	WeightedQuickUnionUF.union(WeightedQuickUnionUF.java:Unknown line)
+	Percolation.open(Percolation.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+TRACE 301899:
+	StdRandom.uniform(StdRandom.java:Unknown line)
+	StdRandom.uniform(StdRandom.java:Unknown line)
+	PercolationStats.generateRandomNumber(PercolationStats.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+TRACE 301898:
+	java.util.Random.nextInt(Random.java:Unknown line)
+	StdRandom.uniform(StdRandom.java:Unknown line)
+	StdRandom.uniform(StdRandom.java:Unknown line)
+	PercolationStats.generateRandomNumber(PercolationStats.java:Unknown line)
+TRACE 301901:
+	PercolationStats.generateRandomNumber(PercolationStats.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+	PercolationStats.<init>(PercolationStats.java:Unknown line)
+TRACE 301930:
+	Percolation.xyTo1D(Percolation.java:Unknown line)
+	Percolation.isOpen(Percolation.java:Unknown line)
+	Percolation.open(Percolation.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+TRACE 301925:
+	java.lang.Math.ceil(Math.java:Unknown line)
+	PercolationStats.RowIdFor(PercolationStats.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+TRACE 301897:
+	java.util.Random.next(Random.java:Unknown line)
+	java.util.Random.nextInt(Random.java:Unknown line)
+	StdRandom.uniform(StdRandom.java:Unknown line)
+	StdRandom.uniform(StdRandom.java:Unknown line)
+TRACE 301896:
+	java.util.concurrent.atomic.AtomicLong.compareAndSet(AtomicLong.java:Unknown line)
+	java.util.Random.next(Random.java:Unknown line)
+	java.util.Random.nextInt(Random.java:Unknown line)
+	StdRandom.uniform(StdRandom.java:Unknown line)
+TRACE 301841:
+	WeightedQuickUnionUF.connected(WeightedQuickUnionUF.java:Unknown line)
+	Percolation.percolates(Percolation.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+	PercolationStats.<init>(PercolationStats.java:Unknown line)
+TRACE 301935:
+	WeightedQuickUnionUF.find(WeightedQuickUnionUF.java:Unknown line)
+	WeightedQuickUnionUF.union(WeightedQuickUnionUF.java:Unknown line)
+	Percolation.open(Percolation.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+TRACE 301922:
+	java.lang.Math.getExponent(Math.java:Unknown line)
+	java.lang.StrictMath.floorOrCeil(StrictMath.java:Unknown line)
+	java.lang.StrictMath.ceil(StrictMath.java:Unknown line)
+	java.lang.Math.ceil(Math.java:Unknown line)
+TRACE 301921:
+	sun.misc.FpUtils.getExponent(FpUtils.java:Unknown line)
+	java.lang.Math.getExponent(Math.java:Unknown line)
+	java.lang.StrictMath.floorOrCeil(StrictMath.java:Unknown line)
+	java.lang.StrictMath.ceil(StrictMath.java:Unknown line)
+TRACE 301924:
+	java.lang.StrictMath.ceil(StrictMath.java:Unknown line)
+	java.lang.Math.ceil(Math.java:Unknown line)
+	PercolationStats.RowIdFor(PercolationStats.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+TRACE 301926:
+	PercolationStats.RowIdFor(PercolationStats.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+	PercolationStats.<init>(PercolationStats.java:Unknown line)
+TRACE 301923:
+	java.lang.StrictMath.floorOrCeil(StrictMath.java:Unknown line)
+	java.lang.StrictMath.ceil(StrictMath.java:Unknown line)
+	java.lang.Math.ceil(Math.java:Unknown line)
+	PercolationStats.RowIdFor(PercolationStats.java:Unknown line)
+TRACE 301895:
+	java.util.concurrent.atomic.AtomicLong.get(AtomicLong.java:Unknown line)
+	java.util.Random.next(Random.java:Unknown line)
+	java.util.Random.nextInt(Random.java:Unknown line)
+	StdRandom.uniform(StdRandom.java:Unknown line)
+TRACE 301840:
+	WeightedQuickUnionUF.find(WeightedQuickUnionUF.java:Unknown line)
+	WeightedQuickUnionUF.connected(WeightedQuickUnionUF.java:Unknown line)
+	Percolation.percolates(Percolation.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+TRACE 301928:
+	Percolation.validate(Percolation.java:Unknown line)
+	Percolation.open(Percolation.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+TRACE 300399:
+	sun.misc.URLClassPath$3.run(URLClassPath.java:Unknown line)
+	sun.misc.URLClassPath$3.run(URLClassPath.java:Unknown line)
+	sun.misc.URLClassPath.getLoader(URLClassPath.java:Unknown line)
+	sun.misc.URLClassPath.getLoader(URLClassPath.java:Unknown line)
+TRACE 300893:
+	java.io.ExpiringCache$1.removeEldestEntry(ExpiringCache.java:Unknown line)
+	java.util.LinkedHashMap.addEntry(LinkedHashMap.java:Unknown line)
+	java.util.HashMap.put(HashMap.java:Unknown line)
+	java.io.ExpiringCache.put(ExpiringCache.java:Unknown line)
+TRACE 301022:
+	java.lang.ClassLoader.loadClass(ClassLoader.java:Unknown line)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:Unknown line)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:Unknown line)
+	java.lang.ClassLoader.defineClass(ClassLoader.java:Unknown line)
+TRACE 301347:
+	sun.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:Unknown line)
+	java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:Unknown line)
+	java.lang.reflect.Constructor.newInstance(Constructor.java:Unknown line)
+	java.lang.Class.newInstance0(Class.java:Unknown line)
+TRACE 300284:
+	java.lang.String.length(String.java:Unknown line)
+	java.lang.AbstractStringBuilder.append(AbstractStringBuilder.java:Unknown line)
+	java.lang.StringBuffer.append(StringBuffer.java:Unknown line)
+	java.net.URLStreamHandler.toExternalForm(URLStreamHandler.java:Unknown line)
+TRACE 301927:
+	PercolationStats.ColIdFor(PercolationStats.java:Unknown line)
+	PercolationStats.openRandomSite(PercolationStats.java:Unknown line)
+	PercolationStats.run(PercolationStats.java:Unknown line)
+	PercolationStats.<init>(PercolationStats.java:Unknown line)
+TRACE 301997:
+	java.lang.Thread.start(Thread.java:Unknown line)
+	sun.misc.Signal.dispatch(Signal.java:Unknown line)
+TRACE 302004:
+	java.lang.Shutdown.<clinit>(Shutdown.java:Unknown line)
+	java.lang.Terminator$1.handle(Terminator.java:Unknown line)
+	sun.misc.Signal$1.run(Signal.java:Unknown line)
+	java.lang.Thread.run(Thread.java:Unknown line)
+TRACE 301998:
+	sun.misc.Signal.dispatch(Signal.java:Unknown line)
+CPU TIME (ms) BEGIN (total = 5142) Tue Sep 03 22:54:53 2013
+rank   self  accum   count trace method
+   1 14.39% 14.39%  211977 301931 Percolation.isOpen
+   2 12.99% 27.38%   62012 301902 PercolationStats.siteIsOpen
+   3 11.67% 39.05%   42735 301933 Percolation.open
+   4 10.11% 49.16%   42735 301934 PercolationStats.openRandomSite
+   5  4.22% 53.38%   62013 301900 StdRandom.uniform
+   6  4.16% 57.55%  211977 301929 Percolation.validate
+   7  3.77% 61.32%  135032 301932 Percolation.xyTo1D
+   8  3.38% 64.70%   42737 301842 Percolation.percolates
+   9  3.09% 67.79%   46361 301936 WeightedQuickUnionUF.union
+  10  2.96% 70.75%   62013 301899 StdRandom.uniform
+  11  2.84% 73.59%   62013 301898 java.util.Random.nextInt
+  12  2.66% 76.25%   62013 301901 PercolationStats.generateRandomNumber
+  13  2.49% 78.74%  211977 301930 Percolation.xyTo1D
+  14  2.29% 81.04%   42735 301925 java.lang.Math.ceil
+  15  2.24% 83.27%   62013 301897 java.util.Random.next
+  16  1.96% 85.24%   62013 301896 java.util.concurrent.atomic.AtomicLong.compareAndSet
+  17  1.79% 87.03%   42737 301841 WeightedQuickUnionUF.connected
+  18  1.77% 88.80%   92722 301935 WeightedQuickUnionUF.find
+  19  1.75% 90.55%   42735 301922 java.lang.Math.getExponent
+  20  1.59% 92.14%   42735 301921 sun.misc.FpUtils.getExponent
+  21  1.50% 93.64%   42735 301924 java.lang.StrictMath.ceil
+  22  1.48% 95.12%   42735 301926 PercolationStats.RowIdFor
+  23  1.19% 96.30%   42735 301923 java.lang.StrictMath.floorOrCeil
+  24  0.78% 97.08%   62013 301895 java.util.concurrent.atomic.AtomicLong.get
+  25  0.66% 97.74%   85474 301840 WeightedQuickUnionUF.find
+  26  0.62% 98.37%   42735 301928 Percolation.validate
+  27  0.31% 98.68%      11 300399 sun.misc.URLClassPath$3.run
+  28  0.31% 98.99%       4 300893 java.io.ExpiringCache$1.removeEldestEntry
+  29  0.31% 99.30%       1 301022 java.lang.ClassLoader.loadClass
+  30  0.29% 99.59%       5 301347 sun.reflect.ReflectionFactory.newConstructorAccessor
+  31  0.29% 99.88%      42 300284 java.lang.String.length
+  32  0.06% 99.94%   42735 301927 PercolationStats.ColIdFor
+  33  0.02% 99.96%       1 301997 java.lang.Thread.start
+  34  0.02% 99.98%       1 302004 java.lang.Shutdown.<clinit>
+  35  0.02% 100.00%       1 301998 sun.misc.Signal.dispatch
+CPU TIME (ms) END
